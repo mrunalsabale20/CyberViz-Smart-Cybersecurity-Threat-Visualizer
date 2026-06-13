@@ -1,0 +1,92 @@
+﻿@model SmartCyberViz.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Register"; Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 75vh;">
+    <div class="cyber-card" style="width: 100%; max-width: 460px;">
+
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <i class="bi bi-person-plus-fill" style="font-size:2.5rem; color: var(--accent-green);"></i>
+            <h2 class="mt-2" style="font-family:'Share Tech Mono',monospace; color: var(--accent-green);">
+                CREATE ACCOUNT
+            </h2>
+            <p style="color: var(--text-muted); font-size:0.85rem;">
+                Join the threat intelligence network
+            </p>
+        </div>
+
+        <!-- Validation summary -->
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert-cyber-danger p-3 mb-3 rounded">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <asp-validation-summary asp-validation-summary="All" class="mb-0" />
+            </div>
+        }
+
+        <form asp-action="Register" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="mb-3">
+                <label asp-for="FullName" class="form-label">Full Name</label>
+                <div class="input-group">
+                    <span class="input-group-text"
+                          style="background:var(--bg-secondary); border-color:var(--border-color); color:var(--accent-green);">
+                        <i class="bi bi-person"></i>
+                    </span>
+                    <input asp-for="FullName" class="form-control" placeholder="Jane Smith" />
+                </div>
+                <span asp-validation-for="FullName" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">Email Address</label>
+                <div class="input-group">
+                    <span class="input-group-text"
+                          style="background:var(--bg-secondary); border-color:var(--border-color); color:var(--accent-green);">
+                        <i class="bi bi-envelope"></i>
+                    </span>
+                    <input asp-for="Email" class="form-control" placeholder="analyst@cyberviz.com" />
+                </div>
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text"
+                          style="background:var(--bg-secondary); border-color:var(--border-color); color:var(--accent-green);">
+                        <i class="bi bi-lock"></i>
+                    </span>
+                    <input asp-for="Password" class="form-control" placeholder="Min 8 chars, upper + digit" />
+                </div>
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
+                <div class="input-group">
+                    <span class="input-group-text"
+                          style="background:var(--bg-secondary); border-color:var(--border-color); color:var(--accent-green);">
+                        <i class="bi bi-lock-fill"></i>
+                    </span>
+                    <input asp-for="ConfirmPassword" class="form-control" placeholder="Repeat password" />
+                </div>
+                <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="btn btn-cyber w-100 py-2">
+                <i class="bi bi-person-check me-2"></i>CREATE ACCOUNT
+            </button>
+        </form>
+
+        <hr style="border-color: var(--border-color); margin: 1.5rem 0;" />
+
+        <p class="text-center mb-0" style="color: var(--text-muted); font-size:0.85rem;">
+            Already have an account?
+            <a asp-action="Login" style="color: var(--accent-green);">Login here</a>
+        </p>
+    </div>
+</div>

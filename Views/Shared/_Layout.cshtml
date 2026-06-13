@@ -1,0 +1,407 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — Smart Cyber Viz</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+            :root {
+                --bg-primary:    #0a0e1a;
+                --bg-secondary:  #0d1526;
+                --bg-card:       #111827;
+                --bg-card-hover: #1a2236;
+                --accent-green:  #00ff88;
+                --accent-red:    #ff3860;
+                --accent-blue:   #00b4ff;
+                --accent-yellow: #ffd700;
+                --text-primary:  #e2e8f0;
+                --text-muted:    #64748b;
+                --border-color:  #1e2d45;
+                --nav-height:    64px;
+            }
+
+            * { box-sizing: border-box; }
+
+            body {
+                background-color: var(--bg-primary);
+                color: var(--text-primary);
+                font-family: 'Rajdhani', sans-serif;
+                font-size: 1rem;
+                min-height: 100vh;
+            }
+
+            /* ── Scrollbar ── */
+            ::-webkit-scrollbar { width: 6px; }
+            ::-webkit-scrollbar-track { background: var(--bg-primary); }
+            ::-webkit-scrollbar-thumb { background: var(--accent-green); border-radius: 3px; }
+
+            /* ── Navbar ── */
+            .navbar {
+                background: rgba(10, 14, 26, 0.97) !important;
+                border-bottom: 1px solid var(--border-color);
+                height: var(--nav-height);
+                backdrop-filter: blur(10px);
+            }
+
+            .navbar-brand {
+                font-family: 'Share Tech Mono', monospace;
+                color: var(--accent-green) !important;
+                font-size: 1.2rem;
+                letter-spacing: 1px;
+            }
+
+            .navbar-brand span { color: var(--text-primary); }
+
+            .nav-link {
+                color: var(--text-muted) !important;
+                font-weight: 600;
+                font-size: 0.9rem;
+                letter-spacing: 0.5px;
+                padding: 0.4rem 0.85rem !important;
+                border-radius: 6px;
+                transition: all 0.2s ease;
+            }
+
+            .nav-link:hover,
+            .nav-link.active {
+                color: var(--accent-green) !important;
+                background: rgba(0, 255, 136, 0.08);
+            }
+
+            .nav-link i { margin-right: 5px; }
+
+            /* ── Cards ── */
+            .cyber-card {
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                padding: 1.5rem;
+                transition: border-color 0.2s ease, transform 0.2s ease;
+            }
+
+            .cyber-card:hover {
+                border-color: var(--accent-green);
+                transform: translateY(-2px);
+            }
+
+            /* ── Stat cards ── */
+            .stat-card {
+                background: var(--bg-card);
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                padding: 1.25rem 1.5rem;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .stat-card::before {
+                content: '';
+                position: absolute;
+                top: 0; left: 0;
+                width: 4px; height: 100%;
+                background: var(--accent-green);
+            }
+
+            .stat-card.danger::before  { background: var(--accent-red); }
+            .stat-card.warning::before { background: var(--accent-yellow); }
+            .stat-card.info::before    { background: var(--accent-blue); }
+
+            .stat-number {
+                font-family: 'Share Tech Mono', monospace;
+                font-size: 2rem;
+                color: var(--accent-green);
+                line-height: 1;
+            }
+
+            .stat-card.danger  .stat-number { color: var(--accent-red); }
+            .stat-card.warning .stat-number { color: var(--accent-yellow); }
+            .stat-card.info    .stat-number { color: var(--accent-blue); }
+
+            .stat-label {
+                font-size: 0.8rem;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-top: 0.25rem;
+            }
+
+            /* ── Buttons ── */
+            .btn-cyber {
+                background: transparent;
+                border: 1px solid var(--accent-green);
+                color: var(--accent-green);
+                font-family: 'Rajdhani', sans-serif;
+                font-weight: 600;
+                letter-spacing: 1px;
+                padding: 0.5rem 1.5rem;
+                border-radius: 6px;
+                transition: all 0.2s ease;
+            }
+
+            .btn-cyber:hover {
+                background: var(--accent-green);
+                color: var(--bg-primary);
+            }
+
+            .btn-cyber-danger {
+                border-color: var(--accent-red);
+                color: var(--accent-red);
+            }
+
+            .btn-cyber-danger:hover {
+                background: var(--accent-red);
+                color: #fff;
+            }
+
+            /* ── Forms ── */
+            .form-control, .form-select {
+                background: var(--bg-secondary) !important;
+                border: 1px solid var(--border-color) !important;
+                color: var(--text-primary) !important;
+                border-radius: 8px;
+            }
+
+            .form-control:focus, .form-select:focus {
+                border-color: var(--accent-green) !important;
+                box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1) !important;
+            }
+
+            .form-control::placeholder { color: var(--text-muted) !important; }
+
+            .form-label {
+                color: var(--text-muted);
+                font-size: 0.85rem;
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            /* ── Tables ── */
+            .table {
+                color: var(--text-primary);
+                border-color: var(--border-color);
+            }
+
+            .table thead th {
+                background: var(--bg-secondary);
+                color: var(--accent-green);
+                font-size: 0.8rem;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                border-color: var(--border-color);
+                font-weight: 600;
+            }
+
+            .table tbody tr {
+                border-color: var(--border-color);
+                transition: background 0.15s;
+            }
+
+            .table tbody tr:hover { background: var(--bg-card-hover); }
+
+            /* ── Badges ── */
+            .badge-severity-critical { background: #7b2d8b; color: #fff; }
+            .badge-severity-high     { background: var(--accent-red); color: #fff; }
+            .badge-severity-medium   { background: var(--accent-yellow); color: #000; }
+            .badge-severity-low      { background: var(--accent-blue); color: #fff; }
+            .badge-severity-clean    { background: var(--accent-green); color: #000; }
+
+            /* ── Page header ── */
+            .page-header {
+                border-bottom: 1px solid var(--border-color);
+                padding-bottom: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .page-title {
+                font-family: 'Share Tech Mono', monospace;
+                font-size: 1.6rem;
+                color: var(--accent-green);
+                margin: 0;
+            }
+
+            .page-subtitle {
+                color: var(--text-muted);
+                font-size: 0.9rem;
+                margin: 0;
+            }
+
+            /* ── Section title ── */
+            .section-title {
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+                color: var(--text-muted);
+                margin-bottom: 1rem;
+            }
+
+            /* ── Alert overrides ── */
+            .alert-cyber-success {
+                background: rgba(0, 255, 136, 0.08);
+                border: 1px solid var(--accent-green);
+                color: var(--accent-green);
+                border-radius: 8px;
+            }
+
+            .alert-cyber-danger {
+                background: rgba(255, 56, 96, 0.08);
+                border: 1px solid var(--accent-red);
+                color: var(--accent-red);
+                border-radius: 8px;
+            }
+
+            /* ── Main content ── */
+            .main-content {
+                padding: 2rem 1.5rem;
+                min-height: calc(100vh - var(--nav-height));
+            }
+
+            /* ── Footer ── */
+            footer {
+                background: var(--bg-secondary);
+                border-top: 1px solid var(--border-color);
+                padding: 1rem 1.5rem;
+                color: var(--text-muted);
+                font-size: 0.8rem;
+                font-family: 'Share Tech Mono', monospace;
+            }
+
+            /* ── Glow effects ── */
+            .glow-green { text-shadow: 0 0 10px rgba(0, 255, 136, 0.5); }
+            .glow-red   { text-shadow: 0 0 10px rgba(255, 56, 96, 0.5); }
+
+            /* ── Scan line animation ── */
+            @@keyframes scanline {
+                0%   { top: -10%; }
+                100% { top: 110%; }
+            }
+    </style>
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+
+    <!-- ── Navbar ─────────────────────────────────────────────────── -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container-fluid px-4">
+
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-shield-fill-check me-2"></i>CYBER<span>VIZ</span>
+            </a>
+
+            <button class="navbar-toggler border-0" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <i class="bi bi-list text-white fs-4"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav me-auto ms-3 gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Home" asp-action="Index">
+                            <i class="bi bi-house"></i>Home
+                        </a>
+                    </li>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Dashboard" asp-action="Index">
+                                <i class="bi bi-speedometer2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="ThreatMap" asp-action="Index">
+                                <i class="bi bi-globe"></i>Threat Map
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="ThreatAnalysis" asp-action="Index">
+                                <i class="bi bi-search"></i>IP Analysis
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Phishing" asp-action="Index">
+                                <i class="bi bi-link-45deg"></i>Phishing Check
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Password" asp-action="Index">
+                                <i class="bi bi-key"></i>Password
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="ThreatFeed" asp-action="Index">
+                                <i class="bi bi-rss"></i>Threat Feed
+                            </a>
+                        </li>
+                    }
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="About" asp-action="Index">
+                            <i class="bi bi-info-circle"></i>About
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Auth buttons -->
+                <ul class="navbar-nav ms-auto align-items-center gap-2">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <li class="nav-item">
+                            <span class="nav-link" style="color: var(--accent-green);">
+                                <i class="bi bi-person-circle me-1"></i>@User.Identity.Name
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <form asp-controller="Account" asp-action="Logout" method="post">
+                                <button type="submit" class="btn btn-cyber btn-cyber-danger btn-sm">
+                                    <i class="bi bi-box-arrow-right me-1"></i>Logout
+                                </button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="btn btn-cyber btn-sm" asp-controller="Account" asp-action="Login">
+                                <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-cyber btn-sm ms-1" asp-controller="Account" asp-action="Register">
+                                <i class="bi bi-person-plus me-1"></i>Register
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ── Main Content ───────────────────────────────────────────── -->
+    <div style="padding-top: var(--nav-height);">
+        <div class="main-content">
+            @RenderBody()
+        </div>
+    </div>
+
+    <!-- ── Footer ────────────────────────────────────────────────── -->
+    <footer class="text-center">
+        <span style="color: var(--accent-green);">&#9632;</span>
+        SmartCyberViz &copy; @DateTime.Now.Year &nbsp;|&nbsp;
+        Built with ASP.NET Core &nbsp;|&nbsp;
+        <span style="color: var(--accent-green);">&#9632;</span>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

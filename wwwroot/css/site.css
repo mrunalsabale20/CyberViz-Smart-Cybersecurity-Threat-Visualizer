@@ -1,0 +1,21 @@
+/* All global styles are defined in _Layout.cshtml via <style> block.
+   Add any additional page-specific overrides here. */
+
+html, body {
+    height: 100%;
+}
+
+.validation-summary-errors ul {
+    margin: 0;
+    padding-left: 1rem;
+    list-style: none;
+}
+
+.field-validation-error {
+    color: #ff3860;
+    font-size: 0.8rem;
+}
+
+.input-validation-error {
+    border-color: #ff3860 !important;
+}

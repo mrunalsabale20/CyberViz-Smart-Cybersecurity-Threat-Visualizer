@@ -1,0 +1,240 @@
+﻿@using SmartCyberViz.Models
+@model IEnumerable<ThreatLog>
+@{
+    ViewData["Title"] = "Cyber Attack Map";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+<style>
+    #map {
+        height: 540px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        z-index: 1;
+    }
+    .leaflet-popup-content-wrapper {
+        background: #111827;
+        border: 1px solid var(--border-color);
+        color: var(--text-primary);
+        border-radius: 8px;
+        font-family: 'Rajdhani', sans-serif;
+    }
+    .leaflet-popup-tip { background: #111827; }
+    .popup-ip   { font-family:'Share Tech Mono',monospace; color: var(--accent-green); font-size:1rem; }
+    .popup-type { color: var(--accent-blue); font-weight:700; }
+    .popup-meta { color: var(--text-muted); font-size:0.85rem; margin-top:4px; }
+
+    .legend-dot {
+        display: inline-block;
+        width: 10px; height: 10px;
+        border-radius: 50%;
+        margin-right: 6px;
+    }
+
+    @@keyframes pulse {
+        0%   { transform: scale(1);   opacity: 1; }
+        50%  { transform: scale(1.6); opacity: 0.4; }
+        100% { transform: scale(1);   opacity: 1; }
+    }
+</style>
+}
+
+<!-- ── Page Header ───────────────────────────────────────────────── -->
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="page-title"><i class="bi bi-globe me-2"></i>CYBER ATTACK MAP</h1>
+        <p class="page-subtitle">Real-time global threat visualization</p>
+    </div>
+    <button class="btn btn-cyber btn-sm" id="seedBtn">
+        <i class="bi bi-plus-circle me-1"></i>Load Demo Threats
+    </button>
+</div>
+
+<!-- ── Stats Strip ───────────────────────────────────────────────── -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="stat-card text-center">
+            <div class="stat-number" id="totalCount">@Model.Count()</div>
+            <div class="stat-label">Total Threats</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card danger text-center">
+            <div class="stat-number" id="criticalCount">@Model.Count(t => t.Severity == "Critical")</div>
+            <div class="stat-label">Critical</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card warning text-center">
+            <div class="stat-number" id="highCount">@Model.Count(t => t.Severity == "High")</div>
+            <div class="stat-label">High</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-card info text-center">
+            <div class="stat-number" id="mediumCount">@Model.Count(t => t.Severity == "Medium")</div>
+            <div class="stat-label">Medium</div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Map + Sidebar ─────────────────────────────────────────────── -->
+<div class="row g-4">
+
+    <!-- Map -->
+    <div class="col-lg-8">
+        <div class="cyber-card p-2">
+            <div id="map"></div>
+
+            <!-- Legend -->
+            <div class="d-flex flex-wrap gap-3 mt-3 px-2">
+                <span style="font-size:0.8rem; color:var(--text-muted);">
+                    <span class="legend-dot" style="background:#ff3860;"></span>Critical
+                </span>
+                <span style="font-size:0.8rem; color:var(--text-muted);">
+                    <span class="legend-dot" style="background:#ff6b35;"></span>High
+                </span>
+                <span style="font-size:0.8rem; color:var(--text-muted);">
+                    <span class="legend-dot" style="background:#ffd700;"></span>Medium
+                </span>
+                <span style="font-size:0.8rem; color:var(--text-muted);">
+                    <span class="legend-dot" style="background:#00b4ff;"></span>Low
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Feed Sidebar -->
+    <div class="col-lg-4">
+        <div class="cyber-card h-100">
+            <p class="section-title"><i class="bi bi-activity me-2"></i>Live Threat Feed</p>
+            <div id="liveFeed" style="max-height:520px; overflow-y:auto;">
+                @if (!Model.Any())
+                {
+                    <div class="text-center py-4" style="color:var(--text-muted);">
+                        <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                        No threats yet.<br/>Click "Load Demo Threats" to populate the map.
+                    </div>
+                }
+                @foreach (var t in Model.OrderByDescending(x => x.DetectedAt).Take(20))
+                {
+                    var color = t.Severity switch {
+                        "Critical" => "#ff3860",
+                        "High"     => "#ff6b35",
+                        "Medium"   => "#ffd700",
+                        _          => "#00b4ff"
+                    };
+                    <div class="d-flex align-items-start gap-2 mb-3 pb-3"
+                         style="border-bottom:1px solid var(--border-color);">
+                        <span style="width:8px;height:8px;border-radius:50%;background:@color;
+                                     margin-top:5px;flex-shrink:0;box-shadow:0 0 6px @color;"></span>
+                        <div>
+                            <div style="font-family:'Share Tech Mono',monospace;
+                                        color:var(--accent-green); font-size:0.85rem;">
+                                @t.IPAddress
+                            </div>
+                            <div style="color:var(--text-primary); font-size:0.85rem; font-weight:600;">
+                                @t.ThreatType
+                            </div>
+                            <div style="color:var(--text-muted); font-size:0.75rem;">
+                                @t.Country — @t.DetectedAt.ToString("HH:mm:ss")
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<!-- Leaflet.js -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+    // ── Init map ──────────────────────────────────────────────────
+    const map = L.map('map', { zoomControl: true, scrollWheelZoom: true })
+                  .setView([20, 0], 2);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CARTO',
+        subdomains: 'abcd',
+        maxZoom: 18
+    }).addTo(map);
+
+    // ── Severity colors ───────────────────────────────────────────
+    const colors = {
+        Critical : '#ff3860',
+        High     : '#ff6b35',
+        Medium   : '#ffd700',
+        Low      : '#00b4ff'
+    };
+
+    function makeMarker(t) {
+        const color  = colors[t.severity] || '#00b4ff';
+        const radius = t.severity === 'Critical' ? 10
+                     : t.severity === 'High'     ? 8
+                     : t.severity === 'Medium'   ? 6 : 5;
+
+        const circle = L.circleMarker([t.lat, t.lng], {
+            radius      : radius,
+            fillColor   : color,
+            color       : color,
+            weight      : 1,
+            opacity     : 0.9,
+            fillOpacity : 0.7
+        });
+
+        circle.bindPopup(`
+            <div style="min-width:180px;">
+                <div class="popup-ip">${t.ip}</div>
+                <div class="popup-type">${t.type}</div>
+                <div class="popup-meta">
+                    <span class="badge" style="background:${color};color:#000;font-size:0.7rem;">
+                        ${t.severity}
+                    </span>
+                    &nbsp;${t.country} — ${t.city}
+                </div>
+                <div class="popup-meta"><i class="bi bi-clock"></i> ${t.detected}</div>
+            </div>
+        `);
+
+        return circle;
+    }
+
+    // ── Load markers from API ─────────────────────────────────────
+    function loadMarkers() {
+        fetch('/ThreatMap/GetMapData')
+            .then(r => r.json())
+            .then(data => {
+                map.eachLayer(l => {
+                    if (l instanceof L.CircleMarker) map.removeLayer(l);
+                });
+                data.forEach(t => makeMarker(t).addTo(map));
+            });
+    }
+
+    loadMarkers();
+
+    // ── Seed demo data ────────────────────────────────────────────
+    document.getElementById('seedBtn').addEventListener('click', () => {
+        fetch('/ThreatMap/SeedDemoData', {
+            method : 'POST',
+            headers: { 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || '' }
+        })
+        .then(r => r.json())
+        .then(d => {
+            if (d.success) {
+                loadMarkers();
+                location.reload();
+            }
+        });
+    });
+
+    // ── Auto-refresh every 30s ────────────────────────────────────
+    setInterval(loadMarkers, 30000);
+</script>
+@Html.AntiForgeryToken()
+}

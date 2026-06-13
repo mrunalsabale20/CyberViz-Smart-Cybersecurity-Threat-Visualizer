@@ -1,0 +1,99 @@
+﻿@{
+    ViewData["Title"] = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- ── Hero Section ─────────────────────────────────────────────── -->
+<div style="min-height: 90vh; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden;">
+
+    <!-- Animated background grid -->
+    <div style="position:absolute; inset:0; background-image: linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px); background-size: 50px 50px; pointer-events:none;"></div>
+
+    <div class="container text-center" style="position:relative; z-index:1;">
+
+        <!-- Badge -->
+        <div class="d-inline-block mb-4">
+            <span style="background: rgba(0,255,136,0.1); border: 1px solid var(--accent-green); color: var(--accent-green); padding: 0.35rem 1rem; border-radius: 50px; font-size: 0.8rem; letter-spacing: 2px; font-family:'Share Tech Mono',monospace;">
+                &#9632; REAL-TIME THREAT INTELLIGENCE &#9632;
+            </span>
+        </div>
+
+        <!-- Main heading -->
+        <h1 style="font-family:'Share Tech Mono',monospace; font-size: clamp(2rem, 5vw, 3.8rem); color: var(--text-primary); line-height: 1.15; margin-bottom: 1rem;">
+            SMART <span style="color: var(--accent-green);">CYBERSECURITY</span><br />THREAT VISUALIZER
+        </h1>
+
+        <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto 2.5rem;">
+            Analyze malicious IPs, detect phishing URLs, check password breaches,
+            and visualize global cyber threats — all in one platform.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+            <a asp-controller="Account" asp-action="Register" class="btn btn-cyber px-4 py-2" style="font-size:1rem;">
+                <i class="bi bi-shield-check me-2"></i>GET STARTED FREE
+            </a>
+            <a asp-controller="About" asp-action="Index" class="btn btn-cyber px-4 py-2" style="font-size:1rem; border-color:var(--accent-blue); color:var(--accent-blue);">
+                <i class="bi bi-info-circle me-2"></i>LEARN MORE
+            </a>
+        </div>
+
+        <!-- Stats row -->
+        <div class="row g-3 mt-5 justify-content-center">
+            <div class="col-6 col-md-3">
+                <div class="cyber-card text-center py-3">
+                    <div style="font-family:'Share Tech Mono',monospace; font-size:1.8rem; color:var(--accent-green);">4+</div>
+                    <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px;">Threat APIs</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="cyber-card text-center py-3">
+                    <div style="font-family:'Share Tech Mono',monospace; font-size:1.8rem; color:var(--accent-blue);">Live</div>
+                    <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px;">Attack Map</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="cyber-card text-center py-3">
+                    <div style="font-family:'Share Tech Mono',monospace; font-size:1.8rem; color:var(--accent-yellow);">k-Anon</div>
+                    <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px;">Safe Password Check</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="cyber-card text-center py-3">
+                    <div style="font-family:'Share Tech Mono',monospace; font-size:1.8rem; color:var(--accent-red);">Real-time</div>
+                    <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px;">Threat Feed</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Features Section ──────────────────────────────────────────── -->
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <p class="section-title">What You Can Do</p>
+        <h2 style="font-family:'Share Tech Mono',monospace; color:var(--text-primary);">
+            PLATFORM <span style="color:var(--accent-green);">CAPABILITIES</span>
+        </h2>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var feature in new[] {
+            new { Icon = "bi-globe2",        Color = "var(--accent-green)",  Title = "Cyber Attack Map",       Desc = "Visualize real-time attack origins on an interactive world map powered by Leaflet.js and OpenStreetMap." },
+            new { Icon = "bi-search",         Color = "var(--accent-blue)",   Title = "IP Threat Analysis",     Desc = "Instantly check any IP address against AbuseIPDB and get geo-location, ISP, risk score and full report history." },
+            new { Icon = "bi-link-45deg",     Color = "var(--accent-red)",    Title = "Phishing URL Checker",   Desc = "Scan any URL through VirusTotal's 70+ security engines and get a verdict in seconds." },
+            new { Icon = "bi-key-fill",       Color = "var(--accent-yellow)", Title = "Password Analyzer",      Desc = "Check if your password appears in known data breaches via HaveIBeenPwned using the k-Anonymity model." },
+            new { Icon = "bi-speedometer2",   Color = "var(--accent-green)",  Title = "Security Dashboard",     Desc = "Monitor all your threat checks at a glance with Chart.js-powered analytics and activity summaries." },
+            new { Icon = "bi-rss-fill",       Color = "var(--accent-blue)",   Title = "Threat Intelligence Feed", Desc = "Stay updated with aggregated threat intelligence data and recent cyber attack trends." }
+        })
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="cyber-card h-100">
+                    <i class="bi @feature.Icon mb-3" style="font-size:1.8rem; color:@feature.Color;"></i>
+                    <h5 style="color:var(--text-primary); font-weight:700;">@feature.Title</h5>
+                    <p style="color:var(--text-muted); font-size:0.9rem; margin:0;">@feature.Desc</p>
+                </div>
+            </div>
+        }
+    </div>
+</div>

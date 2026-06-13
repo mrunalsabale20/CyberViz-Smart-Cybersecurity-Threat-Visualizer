@@ -1,0 +1,242 @@
+﻿@{
+    ViewData["Title"] = "About Cybersecurity";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- ── Hero ──────────────────────────────────────────────────────── -->
+<div class="cyber-card mb-5 text-center py-5"
+     style="background: linear-gradient(135deg, #0d1526 0%, #111827 100%);
+    border-color: var(--accent-green);">
+    <i class="bi bi-shield-fill-check"
+       style="font-size:4rem; color:var(--accent-green);"></i>
+    <h1 class="mt-3"
+        style="font-family:'Share Tech Mono',monospace; color:var(--text-primary);">
+        ABOUT <span style="color:var(--accent-green);">CYBERSECURITY</span>
+    </h1>
+    <p style="color:var(--text-muted); max-width:600px; margin:1rem auto 0; font-size:1rem;">
+        Understanding the threat landscape is the first step to defending against it.
+        Here is everything you need to know about modern cyber threats.
+    </p>
+</div>
+
+<!-- ── What is Cybersecurity ─────────────────────────────────────── -->
+<div class="row g-4 mb-5">
+    <div class="col-lg-6">
+        <div class="cyber-card h-100">
+            <i class="bi bi-shield-fill-check mb-3"
+               style="font-size:2rem; color:var(--accent-green);"></i>
+            <h4 style="color:var(--text-primary); font-weight:700;">What is Cybersecurity?</h4>
+            <p style="color:var(--text-muted); line-height:1.8;">
+                Cybersecurity is the practice of protecting systems, networks, and programs
+                from digital attacks. These attacks are usually aimed at accessing, changing,
+                or destroying sensitive information, extorting money from users, or
+                interrupting normal business operations.
+            </p>
+            <p style="color:var(--text-muted); line-height:1.8; margin:0;">
+                It encompasses everything from securing individual devices to defending
+                national infrastructure. As our world becomes increasingly connected,
+                the importance of cybersecurity has never been greater.
+            </p>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="cyber-card h-100">
+            <i class="bi bi-graph-up-arrow mb-3"
+               style="font-size:2rem; color:var(--accent-red);"></i>
+            <h4 style="color:var(--text-primary); font-weight:700;">The Threat Landscape</h4>
+            <p style="color:var(--text-muted); line-height:1.8;">
+                Cybercrime is one of the fastest-growing criminal industries globally.
+                By 2025, cybercrime damages are projected to cost the world $10.5 trillion
+                annually — more than the GDP of most countries.
+            </p>
+            <p style="color:var(--text-muted); line-height:1.8; margin:0;">
+                Attacks happen every 39 seconds on average. No individual, company,
+                or government is immune. Understanding the types of threats is
+                critical to building an effective defense.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ── Common Threat Types ────────────────────────────────────────── -->
+<div class="mb-5">
+    <div class="text-center mb-4">
+        <p class="section-title">Know Your Enemy</p>
+        <h2 style="font-family:'Share Tech Mono',monospace; color:var(--text-primary);">
+            COMMON <span style="color:var(--accent-red);">THREAT TYPES</span>
+        </h2>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var threat in new[] {
+            new { Icon="bi-bug-fill",           Color="var(--accent-red)",    Name="Malware",
+                  Desc="Malicious software including viruses, worms, trojans, and spyware designed to damage or gain unauthorized access to systems.",
+                  Examples="Ransomware, Spyware, Trojans, Rootkits" },
+            new { Icon="bi-envelope-fill",      Color="var(--accent-yellow)", Name="Phishing",
+                  Desc="Fraudulent attempts to obtain sensitive information by disguising as a trustworthy entity in electronic communications.",
+                  Examples="Email phishing, Spear phishing, Vishing, Smishing" },
+            new { Icon="bi-tsunami",            Color="var(--accent-blue)",   Name="DDoS Attacks",
+                  Desc="Distributed Denial of Service attacks overwhelm a target's servers with traffic, making services unavailable to legitimate users.",
+                  Examples="Volumetric attacks, Protocol attacks, Application layer attacks" },
+            new { Icon="bi-person-fill-slash",  Color="var(--accent-green)",  Name="Brute Force",
+                  Desc="Trial-and-error method to decode passwords or PINs by systematically checking all possible combinations until the correct one is found.",
+                  Examples="Dictionary attacks, Credential stuffing, Password spraying" },
+            new { Icon="bi-code-slash",         Color="var(--accent-red)",    Name="SQL Injection",
+                  Desc="Injection of malicious SQL code into a query to manipulate the database, allowing attackers to read, modify or delete data.",
+                  Examples="Classic SQLi, Blind SQLi, Time-based SQLi" },
+            new { Icon="bi-currency-bitcoin",   Color="var(--accent-yellow)", Name="Ransomware",
+                  Desc="A type of malware that encrypts the victim's data and demands payment for the decryption key, often targeting businesses and hospitals.",
+                  Examples="WannaCry, Ryuk, REvil, LockBit" }
+        })
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="cyber-card h-100">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <i class="bi @threat.Icon"
+                           style="font-size:1.8rem; color:@threat.Color;"></i>
+                        <h5 style="color:var(--text-primary); margin:0; font-weight:700;">
+                            @threat.Name
+                        </h5>
+                    </div>
+                    <p style="color:var(--text-muted); font-size:0.9rem;
+                        line-height:1.7; margin-bottom:0.75rem;">
+                        @threat.Desc
+                    </p>
+                    <div style="font-size:0.78rem; color:@threat.Color;">
+                        <strong>Examples:</strong> @threat.Examples
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- ── CIA Triad ─────────────────────────────────────────────────── -->
+<div class="cyber-card mb-5">
+    <div class="text-center mb-4">
+        <p class="section-title">Foundation of Security</p>
+        <h2 style="font-family:'Share Tech Mono',monospace; color:var(--text-primary);">
+            THE <span style="color:var(--accent-green);">CIA TRIAD</span>
+        </h2>
+    </div>
+    <div class="row g-4 text-center">
+        <div class="col-md-4">
+            <div style="border:1px solid var(--accent-green); border-radius:12px; padding:2rem;">
+                <div style="font-family:'Share Tech Mono',monospace; font-size:2.5rem;
+                    color:var(--accent-green);">
+                    C
+                </div>
+                <h5 style="color:var(--text-primary); margin:0.5rem 0;">Confidentiality</h5>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin:0;">
+                    Ensuring that information is accessible only to those authorized to
+                    have access. Implemented via encryption, access controls, and authentication.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div style="border:1px solid var(--accent-blue); border-radius:12px; padding:2rem;">
+                <div style="font-family:'Share Tech Mono',monospace; font-size:2.5rem;
+                    color:var(--accent-blue);">
+                    I
+                </div>
+                <h5 style="color:var(--text-primary); margin:0.5rem 0;">Integrity</h5>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin:0;">
+                    Maintaining the accuracy and completeness of data. Ensures information
+                    is not altered by unauthorized parties using checksums and digital signatures.
+                </p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div style="border:1px solid var(--accent-yellow); border-radius:12px; padding:2rem;">
+                <div style="font-family:'Share Tech Mono',monospace; font-size:2.5rem;
+                    color:var(--accent-yellow);">
+                    A
+                </div>
+                <h5 style="color:var(--text-primary); margin:0.5rem 0;">Availability</h5>
+                <p style="color:var(--text-muted); font-size:0.9rem; margin:0;">
+                    Ensuring authorized users have access to information when needed.
+                    Protected through redundancy, failover systems, and DDoS mitigation.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Best Practices ────────────────────────────────────────────── -->
+<div class="mb-5">
+    <div class="text-center mb-4">
+        <p class="section-title">Stay Protected</p>
+        <h2 style="font-family:'Share Tech Mono',monospace; color:var(--text-primary);">
+            SECURITY <span style="color:var(--accent-green);">BEST PRACTICES</span>
+        </h2>
+    </div>
+    <div class="row g-3">
+        @foreach (var practice in new[] {
+            new { No="01", Icon="bi-phone",             Color="var(--accent-green)",  Title="Enable Multi-Factor Authentication",  Desc="Add an extra layer of security beyond just passwords. Use authenticator apps over SMS when possible." },
+            new { No="02", Icon="bi-arrow-repeat",      Color="var(--accent-blue)",   Title="Keep Software Updated",               Desc="Patch vulnerabilities immediately. 60% of breaches involve unpatched vulnerabilities." },
+            new { No="03", Icon="bi-key-fill",          Color="var(--accent-yellow)", Title="Use a Password Manager",              Desc="Generate and store unique, complex passwords for every account without memorizing them." },
+            new { No="04", Icon="bi-hdd-fill",          Color="var(--accent-red)",    Title="Backup Your Data Regularly",          Desc="Follow the 3-2-1 rule: 3 copies, 2 media types, 1 offsite. Test restores periodically." },
+            new { No="05", Icon="bi-wifi",              Color="var(--accent-green)",  Title="Use a VPN on Public Networks",        Desc="Encrypt your traffic on public Wi-Fi to prevent man-in-the-middle attacks and eavesdropping." },
+            new { No="06", Icon="bi-person-check-fill", Color="var(--accent-blue)",   Title="Practice the Principle of Least Privilege", Desc="Grant users only the minimum access required to perform their job. Limit blast radius of breaches." }
+        })
+        {
+            <div class="col-md-6">
+                <div class="cyber-card d-flex gap-3 align-items-start">
+                    <div style="font-family:'Share Tech Mono',monospace; font-size:1.5rem;
+                        color:@practice.Color; flex-shrink:0; line-height:1;">
+                        @practice.No
+                    </div>
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <i class="bi @practice.Icon" style="color:@practice.Color;"></i>
+                            <h6 style="color:var(--text-primary); margin:0; font-weight:700;">
+                                @practice.Title
+                            </h6>
+                        </div>
+                        <p style="color:var(--text-muted); font-size:0.85rem;
+                            line-height:1.6; margin:0;">
+                            @practice.Desc
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- ── About This App ────────────────────────────────────────────── -->
+<div class="cyber-card text-center py-4"
+     style="border-color:var(--accent-green);">
+    <i class="bi bi-code-slash mb-3"
+       style="font-size:2rem; color:var(--accent-green);"></i>
+    <h4 style="font-family:'Share Tech Mono',monospace; color:var(--text-primary);">
+        ABOUT THIS APPLICATION
+    </h4>
+    <p style="color:var(--text-muted); max-width:650px;
+        margin:0.75rem auto; line-height:1.8;">
+        Smart Cybersecurity Threat Visualizer is built with
+        <strong style="color:var(--accent-green);">ASP.NET Core MVC</strong> on
+        <strong style="color:var(--accent-green);">.NET 10</strong>, using
+        Entity Framework Core with SQL Server, ASP.NET Core Identity,
+        Chart.js, and Leaflet.js. It integrates AbuseIPDB, VirusTotal,
+        HaveIBeenPwned, and IPStack APIs to deliver real-time threat intelligence.
+    </p>
+    <div class="d-flex flex-wrap gap-2 justify-content-center mt-3">
+        @foreach (var tag in new[] {
+            "ASP.NET Core MVC", ".NET 10", "Entity Framework Core",
+            "SQL Server", "Chart.js", "Leaflet.js",
+            "AbuseIPDB", "VirusTotal", "HaveIBeenPwned", "IPStack"
+        })
+        {
+            <span style="background:rgba(0,255,136,0.08);
+                border:1px solid var(--accent-green);
+                color:var(--accent-green);
+                padding:0.25rem 0.75rem;
+                border-radius:50px;
+                font-size:0.8rem;
+                font-family:'Share Tech Mono',monospace;">
+                @tag
+            </span>
+        }
+    </div>
+</div>

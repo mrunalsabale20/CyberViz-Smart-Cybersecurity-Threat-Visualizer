@@ -1,0 +1,206 @@
+﻿@model SmartCyberViz.ViewModels.ThreatAnalysisViewModel
+@{
+    ViewData["Title"] = "Threat Analysis";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- ── Page Header ───────────────────────────────────────────────── -->
+<div class="page-header">
+    <h1 class="page-title"><i class="bi bi-search me-2"></i>IP THREAT ANALYSIS</h1>
+    <p class="page-subtitle">Check any IP address against AbuseIPDB threat intelligence</p>
+</div>
+
+<!-- ── Search Form ───────────────────────────────────────────────── -->
+<div class="cyber-card mb-4">
+    <form asp-action="Index" method="post">
+        @Html.AntiForgeryToken()
+        <div class="row g-3 align-items-end">
+            <div class="col-md-8">
+                <label asp-for="IPAddress" class="form-label">IP Address to Analyze</label>
+                <div class="input-group">
+                    <span class="input-group-text"
+                          style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--accent-green);">
+                        <i class="bi bi-globe2"></i>
+                    </span>
+                    <input asp-for="IPAddress" class="form-control"
+                           placeholder="e.g. 185.220.101.5" />
+                </div>
+                <span asp-validation-for="IPAddress" class="text-danger small"></span>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-cyber w-100 py-2">
+                    <i class="bi bi-shield-check me-2"></i>ANALYZE IP
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- ── Error ─────────────────────────────────────────────────────── -->
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert-cyber-danger p-3 mb-4 rounded">
+        <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
+    </div>
+}
+
+<!-- ── Results ───────────────────────────────────────────────────── -->
+@if (Model.HasResult)
+{
+    <!-- Risk Score Banner -->
+    <div class="cyber-card mb-4" style="border-color: @Model.RiskColor;">
+        <div class="row align-items-center">
+            <div class="col-md-3 text-center border-end" style="border-color:var(--border-color)!important;">
+                <div style="font-family:'Share Tech Mono',monospace; font-size:3.5rem;
+                    color:@Model.RiskColor; line-height:1;">
+                    @Model.AbuseConfidenceScore<span style="font-size:1.2rem;">%</span>
+                </div>
+                <div style="color:var(--text-muted); font-size:0.8rem; text-transform:uppercase; letter-spacing:1px;">
+                    Abuse Score
+                </div>
+                <span class="badge mt-2 px-3 py-1"
+                      style="background:@Model.RiskColor; color:#fff; font-size:0.85rem;">
+                    @Model.RiskLevel Risk
+                </span>
+            </div>
+            <div class="col-md-9 ps-4">
+                <h4 style="font-family:'Share Tech Mono',monospace; color:var(--accent-green); margin:0;">
+                    @Model.IPAddress
+                </h4>
+                <p style="color:#64748b; margin:0.25rem 0 1rem;">
+                    @Model.ISP &nbsp;|&nbsp; @Model.CountryName @Model.CountryCode
+                </p>
+                <div class="row g-2">
+                    <div class="col-6 col-md-3">
+                        <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Reports</div>
+                        <div style="font-family:'Share Tech Mono',monospace; color:var(--text-primary);">@Model.TotalReports</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Usage Type</div>
+                        <div style="color:var(--text-primary); font-size:0.9rem;">@Model.UsageType</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">TOR Exit Node</div>
+                        <div>
+                            @if (Model.IsTor)
+                            {
+                                <span style="color:var(--accent-red); font-weight:700;">YES</span>
+                            }
+                            else
+                            {
+                                <span style="color:var(--accent-green);">No</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase;">Last Reported</div>
+                        <div style="color:var(--text-primary); font-size:0.85rem;">
+                            @(Model.LastReportedAt == DateTime.MinValue ? "Never" : Model.LastReportedAt.ToString("dd MMM yyyy"))
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Details Card -->
+        <div class="col-md-6">
+            <div class="cyber-card h-100">
+                <p class="section-title"><i class="bi bi-info-circle me-2"></i>IP Details</p>
+                <table class="table table-sm mb-0">
+                    <tbody>
+                        <tr>
+                            <td style="color:#64748b; width:40%;">IP Address</td>
+                            <td style="font-family:'Share Tech Mono',monospace; color:var(--accent-green);">@Model.IPAddress</td>
+                        </tr>
+                        <tr>
+                            <td style="color:#64748b;">Domain</td>
+                            <td style="color:#64748b;">@(string.IsNullOrEmpty(Model.Domain) ? "—" : Model.Domain)</td>
+                        </tr>
+                        <tr>
+                            <td style="color:#64748b;">ISP</td>
+                            <td style="color:#64748b;">@Model.ISP</td>
+                        </tr>
+                        <tr>
+                            <td style="color:#64748b;">Country</td>
+                            <td style="color:#64748b;">@Model.CountryName (@Model.CountryCode)</td>
+                        </tr>
+                        <tr>
+                            <td style="color:#64748b;">City</td>
+                            <td style="color:#64748b;">@(string.IsNullOrEmpty(Model.City) ? "—" : Model.City)</td>
+                        </tr>
+                        <tr>
+                            <td style="color:#64748b;">Coordinates</td>
+                            <td style="font-family:'Share Tech Mono',monospace; color:#64748b; font-size:0.85rem;">
+                                @Model.Latitude.ToString("F4"), @Model.Longitude.ToString("F4")
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="color:#64748b;">Usage Type</td>
+                            <td style="color:#64748b;">@Model.UsageType</td>
+                        </tr>
+                        <tr>
+                            <td style="color:#64748b;">TOR Node</td>
+                            <td>
+                                @if (Model.IsTor)
+                                {
+                                    <span class="badge" style="background:var(--accent-red);">YES — TOR Exit Node</span>
+                                }
+                                else
+                                {
+                                    <span class="badge" style="background:var(--accent-green); color:#000;">Clean</span>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Mini Map -->
+        <div class="col-md-6">
+            <div class="cyber-card h-100">
+                <p class="section-title"><i class="bi bi-geo-alt me-2"></i>Geographic Location</p>
+                @if (Model.Latitude != 0 && Model.Longitude != 0)
+                {
+                    <div id="miniMap" style="height:280px; border-radius:8px; border:1px solid var(--border-color);"></div>
+                }
+                else
+                {
+                    <div class="text-center py-5" style="color:var(--text-muted);">
+                        <i class="bi bi-geo-alt-fill fs-1 d-block mb-2"></i>
+                        Location data not available
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @if (Model.HasResult && Model.Latitude != 0)
+    {
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script>
+            const miniMap = L.map('miniMap').setView([@Model.Latitude, @Model.Longitude], 6);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap &copy; CARTO',
+            subdomains: 'abcd'
+            }).addTo(miniMap);
+
+            L.circleMarker([@Model.Latitude, @Model.Longitude], {
+            radius: 10,
+            fillColor: '@Model.RiskColor',
+            color: '@Model.RiskColor',
+            weight: 2,
+            fillOpacity: 0.8
+            })
+            .bindPopup('<b style="color:@Model.RiskColor;">@Model.IPAddress</b><br/>@Model.City, @Model.CountryName')
+            .addTo(miniMap)
+            .openPopup();
+        </script>
+    }
+}

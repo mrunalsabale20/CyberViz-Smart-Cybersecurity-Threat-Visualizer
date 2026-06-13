@@ -1,0 +1,248 @@
+﻿@model SmartCyberViz.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- ── Page Header ───────────────────────────────────────────────── -->
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="page-title"><i class="bi bi-speedometer2 me-2"></i>DASHBOARD</h1>
+        <p class="page-subtitle">Security overview and threat summary</p>
+    </div>
+    <div style="font-family:'Share Tech Mono',monospace; color:var(--text-muted); font-size:0.8rem;">
+        <i class="bi bi-clock me-1"></i>@DateTime.Now.ToString("dd MMM yyyy — HH:mm")
+    </div>
+</div>
+
+<!-- ── Stat Cards ────────────────────────────────────────────────── -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-2">
+        <div class="stat-card">
+            <div class="stat-number">@Model.TotalThreats</div>
+            <div class="stat-label">Total Threats</div>
+            <i class="bi bi-shield-exclamation" style="position:absolute;right:1rem;top:1rem;font-size:1.4rem;color:rgba(0,255,136,0.15);"></i>
+        </div>
+    </div>
+    <div class="col-6 col-lg-2">
+        <div class="stat-card info">
+            <div class="stat-number">@Model.TotalIPReports</div>
+            <div class="stat-label">IP Reports</div>
+            <i class="bi bi-globe" style="position:absolute;right:1rem;top:1rem;font-size:1.4rem;color:rgba(0,180,255,0.15);"></i>
+        </div>
+    </div>
+    <div class="col-6 col-lg-2">
+        <div class="stat-card warning">
+            <div class="stat-number">@Model.TotalPhishingChecks</div>
+            <div class="stat-label">URL Scans</div>
+            <i class="bi bi-link-45deg" style="position:absolute;right:1rem;top:1rem;font-size:1.4rem;color:rgba(255,215,0,0.15);"></i>
+        </div>
+    </div>
+    <div class="col-6 col-lg-2">
+        <div class="stat-card danger">
+            <div class="stat-number">@Model.MaliciousUrls</div>
+            <div class="stat-label">Malicious URLs</div>
+            <i class="bi bi-bug" style="position:absolute;right:1rem;top:1rem;font-size:1.4rem;color:rgba(255,56,96,0.15);"></i>
+        </div>
+    </div>
+    <div class="col-6 col-lg-2">
+        <div class="stat-card">
+            <div class="stat-number">@Model.TotalPasswordChecks</div>
+            <div class="stat-label">Password Checks</div>
+            <i class="bi bi-key" style="position:absolute;right:1rem;top:1rem;font-size:1.4rem;color:rgba(0,255,136,0.15);"></i>
+        </div>
+    </div>
+    <div class="col-6 col-lg-2">
+        <div class="stat-card danger">
+            <div class="stat-number">@Model.PwnedPasswords</div>
+            <div class="stat-label">Pwned Passwords</div>
+            <i class="bi bi-lock-fill" style="position:absolute;right:1rem;top:1rem;font-size:1.4rem;color:rgba(255,56,96,0.15);"></i>
+        </div>
+    </div>
+</div>
+
+<!-- ── Charts Row ────────────────────────────────────────────────── -->
+<div class="row g-4 mb-4">
+
+    <!-- Threats by Type — Doughnut -->
+    <div class="col-md-6">
+        <div class="cyber-card h-100">
+            <p class="section-title"><i class="bi bi-pie-chart me-2"></i>Threats by Type</p>
+            @if (Model.ThreatsByType.Any())
+            {
+                <canvas id="threatTypeChart" height="220"></canvas>
+            }
+            else
+            {
+                <div class="text-center py-5" style="color:var(--text-muted);">
+                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>No threat data yet
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Threats by Country — Bar -->
+    <div class="col-md-6">
+        <div class="cyber-card h-100">
+            <p class="section-title"><i class="bi bi-bar-chart me-2"></i>Top Attack Origins</p>
+            @if (Model.ThreatsByCountry.Any())
+            {
+                <canvas id="threatCountryChart" height="220"></canvas>
+            }
+            else
+            {
+                <div class="text-center py-5" style="color:var(--text-muted);">
+                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>No country data yet
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- ── Quick Actions ─────────────────────────────────────────────── -->
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <div class="cyber-card">
+            <p class="section-title mb-3"><i class="bi bi-lightning me-2"></i>Quick Actions</p>
+            <div class="d-flex flex-wrap gap-2">
+                <a asp-controller="ThreatAnalysis" asp-action="Index" class="btn btn-cyber btn-sm">
+                    <i class="bi bi-search me-1"></i>Check IP
+                </a>
+                <a asp-controller="Phishing" asp-action="Index" class="btn btn-cyber btn-sm">
+                    <i class="bi bi-link-45deg me-1"></i>Scan URL
+                </a>
+                <a asp-controller="Password" asp-action="Index" class="btn btn-cyber btn-sm">
+                    <i class="bi bi-key me-1"></i>Check Password
+                </a>
+                <a asp-controller="ThreatMap" asp-action="Index" class="btn btn-cyber btn-sm">
+                    <i class="bi bi-globe me-1"></i>View Attack Map
+                </a>
+                <a asp-controller="ThreatFeed" asp-action="Index" class="btn btn-cyber btn-sm">
+                    <i class="bi bi-rss me-1"></i>Threat Feed
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Recent Threats Table ──────────────────────────────────────── -->
+<div class="cyber-card">
+    <p class="section-title"><i class="bi bi-clock-history me-2"></i>Recent Threat Detections</p>
+
+    @if (Model.RecentThreats.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>IP Address</th>
+                        <th>Threat Type</th>
+                        <th>Severity</th>
+                        <th>Country</th>
+                        <th>Detected</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var threat in Model.RecentThreats)
+                    {
+                        <tr>
+                            <td>
+                                <span style="font-family:'Share Tech Mono',monospace; color:var(--accent-green);">
+                                    @threat.IPAddress
+                                </span>
+                            </td>
+                            <td style="color:var(--text-muted);">@threat.ThreatType</td>
+                            <td>
+                                @{
+                                    var badgeClass = threat.Severity switch
+                                    {
+                                        "Critical" => "badge-severity-critical",
+                                        "High" => "badge-severity-high",
+                                        "Medium" => "badge-severity-medium",
+                                        "Low" => "badge-severity-low",
+                                        _ => "badge-severity-low"
+                                    };
+                                }
+                                <span class="badge @badgeClass">@threat.Severity</span>
+                            </td>
+                            <td style="color:var(--text-muted);">@threat.Country</td>
+                            <td style="color:var(--text-muted); font-size:0.85rem;">
+                                @threat.DetectedAt.ToString("dd MMM HH:mm")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-4" style="color:var(--text-muted);">
+            <i class="bi bi-shield-check fs-1 d-block mb-2" style="color:var(--accent-green);"></i>
+            No threats detected yet. Start by running an IP analysis or URL scan.
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <script>
+        Chart.defaults.color = '#64748b';
+        Chart.defaults.borderColor = '#1e2d45';
+
+        // ── Threats by Type — Doughnut ──────────────────────────────
+        @if (Model.ThreatsByType.Any())
+        {
+            <text>
+                new Chart(document.getElementById('threatTypeChart'), {
+                type: 'doughnut',
+                data: {
+                labels: [@Html.Raw(string.Join(",", Model.ThreatsByType.Keys.Select(k => $"'{k}'")))],
+                datasets: [{
+                data: [@string.Join(",", Model.ThreatsByType.Values)],
+                backgroundColor: ['#00ff88','#ff3860','#00b4ff','#ffd700','#7b2d8b','#ff6b35'],
+                borderColor: '#111827',
+                borderWidth: 2
+                }]
+                },
+                options: {
+                responsive: true,
+                plugins: {
+                legend: { position: 'bottom', labels: { color: '#e2e8f0', padding: 15, font: { size: 12 } } }
+                }
+                }
+                });
+            </text>
+        }
+
+        // ── Threats by Country — Bar ────────────────────────────────
+        @if (Model.ThreatsByCountry.Any())
+        {
+            var top10 = Model.ThreatsByCountry.OrderByDescending(x => x.Value).Take(10);
+            <text>
+                new Chart(document.getElementById('threatCountryChart'), {
+                type: 'bar',
+                data: {
+                labels: [@Html.Raw(string.Join(",", top10.Select(k => $"'{k.Key}'")))],
+                datasets: [{
+                label: 'Attacks',
+                data: [@string.Join(",", top10.Select(x => x.Value))],
+                backgroundColor: 'rgba(0,255,136,0.2)',
+                borderColor: '#00ff88',
+                borderWidth: 1,
+                borderRadius: 4
+                }]
+                },
+                options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                y: { grid: { color: '#1e2d45' }, ticks: { color: '#64748b' } },
+                x: { grid: { color: '#1e2d45' }, ticks: { color: '#64748b' } }
+                }
+                }
+                });
+            </text>
+        }
+    </script>
+}

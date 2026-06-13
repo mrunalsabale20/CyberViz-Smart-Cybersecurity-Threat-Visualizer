@@ -1,0 +1,77 @@
+﻿@model SmartCyberViz.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Login"; Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="d-flex justify-content-center align-items-center" style="min-height: 75vh;">
+    <div class="cyber-card" style="width: 100%; max-width: 420px;">
+
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <i class="bi bi-shield-lock-fill" style="font-size:2.5rem; color: var(--accent-green);"></i>
+            <h2 class="mt-2" style="font-family:'Share Tech Mono',monospace; color: var(--accent-green);">
+                SECURE LOGIN
+            </h2>
+            <p style="color: var(--text-muted); font-size:0.85rem;">
+                Authenticate to access the threat dashboard
+            </p>
+        </div>
+
+        <!-- Validation summary -->
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert-cyber-danger p-3 mb-3 rounded">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                <asp-validation-summary asp-validation-summary="All" class="mb-0" />
+            </div>
+        }
+
+        <form asp-action="Login" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">Email Address</label>
+                <div class="input-group">
+                    <span class="input-group-text"
+                          style="background:var(--bg-secondary); border-color:var(--border-color); color:var(--accent-green);">
+                        <i class="bi bi-envelope"></i>
+                    </span>
+                    <input asp-for="Email" class="form-control" placeholder="analyst@cyberviz.com" />
+                </div>
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text"
+                          style="background:var(--bg-secondary); border-color:var(--border-color); color:var(--accent-green);">
+                        <i class="bi bi-lock"></i>
+                    </span>
+                    <input asp-for="Password" class="form-control" placeholder="••••••••" />
+                </div>
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4 d-flex align-items-center">
+                <input asp-for="RememberMe" class="form-check-input me-2" type="checkbox" />
+                <label asp-for="RememberMe" class="form-check-label"
+                       style="color:var(--text-muted); font-size:0.85rem;">
+                    Keep me logged in
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-cyber w-100 py-2">
+                <i class="bi bi-box-arrow-in-right me-2"></i>LOGIN
+            </button>
+        </form>
+
+        <hr style="border-color: var(--border-color); margin: 1.5rem 0;" />
+
+        <p class="text-center mb-0" style="color: var(--text-muted); font-size:0.85rem;">
+            No account?
+            <a asp-action="Register" style="color: var(--accent-green);">Create one here</a>
+        </p>
+    </div>
+</div>

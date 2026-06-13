@@ -1,0 +1,239 @@
+﻿@model SmartCyberViz.ViewModels.PasswordViewModel
+@{
+    ViewData["Title"] = "Password Analyzer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- ── Page Header ───────────────────────────────────────────────── -->
+<div class="page-header">
+    <h1 class="page-title"><i class="bi bi-key me-2"></i>PASSWORD ANALYZER</h1>
+    <p class="page-subtitle">Check password strength and breach history securely</p>
+</div>
+
+<!-- ── Privacy Notice ────────────────────────────────────────────── -->
+<div class="alert-cyber-success p-3 mb-4 rounded d-flex gap-2">
+    <i class="bi bi-shield-lock-fill mt-1 flex-shrink-0"></i>
+    <div>
+        <strong>Your password is never sent anywhere.</strong>
+        We use the k-Anonymity model — only the first 5 characters of its
+        SHA-1 hash are sent to HaveIBeenPwned. Strength is calculated entirely
+        on the server. Your password is never stored.
+    </div>
+</div>
+
+<!-- ── Check Form ────────────────────────────────────────────────── -->
+<div class="cyber-card mb-4">
+    <form asp-action="Index" method="post">
+        @Html.AntiForgeryToken()
+        <div class="row g-3 align-items-end">
+            <div class="col-md-8">
+                <label asp-for="Password" class="form-label">Password to Analyze</label>
+                <div class="input-group">
+                    <span class="input-group-text"
+                          style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--accent-green);">
+                        <i class="bi bi-lock"></i>
+                    </span>
+                    <input asp-for="Password" class="form-control"
+                           id="passwordInput"
+                           placeholder="Enter password to analyze"
+                           autocomplete="off" />
+                    <button class="btn" type="button" id="toggleBtn"
+                            style="background:var(--bg-secondary);border-color:var(--border-color);color:var(--text-muted);">
+                        <i class="bi bi-eye" id="eyeIcon"></i>
+                    </button>
+                </div>
+                <span asp-validation-for="Password" class="text-danger small"></span>
+
+                <!-- Live strength bar (client-side preview) -->
+                <div class="mt-2">
+                    <div style="background:var(--border-color); border-radius:4px; height:4px;">
+                        <div id="liveBar" style="width:0%; height:4px; border-radius:4px;
+                            background:var(--accent-green);
+                            transition:width 0.3s ease, background 0.3s ease;">
+                        </div>
+                    </div>
+                    <span id="liveLabel" style="font-size:0.75rem; color:var(--text-muted);"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-cyber w-100 py-2" id="checkBtn">
+                    <i class="bi bi-shield-check me-2"></i>ANALYZE
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- ── Error ─────────────────────────────────────────────────────── -->
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="alert-cyber-danger p-3 mb-4 rounded">
+        <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
+    </div>
+}
+
+<!-- ── Results ───────────────────────────────────────────────────── -->
+@if (Model.HasResult)
+{
+    <div class="row g-4">
+
+        <!-- Strength Card -->
+        <div class="col-md-6">
+            <div class="cyber-card h-100" style="border-color:@Model.StrengthColor;">
+                <p class="section-title"><i class="bi bi-bar-chart me-2"></i>Password Strength</p>
+
+                <div class="text-center mb-3">
+                    <div style="font-family:'Share Tech Mono',monospace;
+                        font-size:3rem; color:@Model.StrengthColor; line-height:1;">
+                        @Model.StrengthScore<span style="font-size:1rem;">%</span>
+                    </div>
+                    <span class="badge mt-1 px-3 py-2"
+                          style="background:@Model.StrengthColor;
+                        color:@(Model.StrengthLabel == "Fair" || Model.StrengthLabel == "Very Strong" ? "#000" : "#fff");
+                        font-size:0.95rem;">
+                        @Model.StrengthLabel
+                    </span>
+                </div>
+
+                <!-- Strength bar -->
+                <div style="background:var(--border-color); border-radius:6px; height:10px; margin-bottom:1.5rem;">
+                    <div style="width:@Model.StrengthScore%; background:@Model.StrengthColor;
+                    border-radius:6px; height:10px;"></div>
+                </div>
+
+                <!-- Tips -->
+                @if (Model.StrengthTips.Any())
+                {
+                    <p class="section-title">Improvement Tips</p>
+                    @foreach (var tip in Model.StrengthTips)
+                    {
+                        <div class="d-flex gap-2 mb-2">
+                            <i class="bi bi-arrow-right-circle mt-1"
+                               style="color:var(--accent-yellow); flex-shrink:0;"></i>
+                            <span style="color:var(--text-muted); font-size:0.9rem;">@tip</span>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="d-flex gap-2">
+                        <i class="bi bi-check-circle-fill mt-1"
+                           style="color:var(--accent-green); flex-shrink:0;"></i>
+                        <span style="color:var(--text-muted); font-size:0.9rem;">
+                            Excellent! Your password meets all strength criteria.
+                        </span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Breach Card -->
+        <div class="col-md-6">
+            <div class="cyber-card h-100"
+                 style="border-color:@(Model.IsPwned ? "#ff3860" : "#00ff88");">
+                <p class="section-title"><i class="bi bi-database me-2"></i>Breach Database Check</p>
+
+                <div class="text-center py-3">
+                    @if (Model.IsPwned)
+                    {
+                        <i class="bi bi-x-octagon-fill"
+                           style="font-size:3.5rem; color:var(--accent-red);"></i>
+                        <div class="mt-2" style="font-family:'Share Tech Mono',monospace;
+                            font-size:2rem; color:var(--accent-red);">
+                            PWNED
+                        </div>
+                        <p style="color:var(--text-muted); margin-top:0.5rem; font-size:0.9rem;">
+                            This password has appeared in
+                            <strong style="color:var(--accent-red);">
+                                @Model.PwnedCount.ToString("N0")
+                            </strong>
+                            known data breaches.
+                        </p>
+                        <div class="alert-cyber-danger p-3 rounded text-start mt-3">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>Action Required:</strong> Change this password immediately
+                            on all accounts where it is used.
+                        </div>
+                    }
+                    else
+                    {
+                        <i class="bi bi-shield-check"
+                           style="font-size:3.5rem; color:var(--accent-green);"></i>
+                        <div class="mt-2" style="font-family:'Share Tech Mono',monospace;
+                            font-size:2rem; color:var(--accent-green);">
+                            SAFE
+                        </div>
+                        <p style="color:var(--text-muted); margin-top:0.5rem; font-size:0.9rem;">
+                            This password was not found in any known data breach database.
+                        </p>
+                        <div class="alert-cyber-success p-3 rounded text-start mt-3">
+                            <i class="bi bi-check-circle me-2"></i>
+                            Good news! No breach records found for this password.
+                        </div>
+                    }
+                </div>
+
+                <!-- k-Anonymity note -->
+                <div class="mt-3 pt-3" style="border-top:1px solid var(--border-color);">
+                    <p style="color:var(--text-muted); font-size:0.75rem; margin:0;">
+                        <i class="bi bi-lock-fill me-1" style="color:var(--accent-green);"></i>
+                        Checked using k-Anonymity — your password was never transmitted.
+                        Only a 5-character SHA-1 hash prefix was sent to HaveIBeenPwned.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        // ── Toggle password visibility ────────────────────────────────
+        const input   = document.getElementById('passwordInput');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        document.getElementById('toggleBtn').addEventListener('click', () => {
+            const isText = input.type === 'text';
+            input.type = isText ? 'password' : 'text';
+            eyeIcon.className = isText ? 'bi bi-eye' : 'bi bi-eye-slash';
+        });
+
+        // ── Live client-side strength preview ────────────────────────
+        const liveBar   = document.getElementById('liveBar');
+        const liveLabel = document.getElementById('liveLabel');
+
+        input.addEventListener('input', function () {
+            const val   = this.value;
+            let score   = 0;
+            if (val.length >= 8)  score += 20;
+            if (val.length >= 12) score += 10;
+            if (/[A-Z]/.test(val)) score += 20;
+            if (/[a-z]/.test(val)) score += 20;
+            if (/[0-9]/.test(val)) score += 15;
+            if (/[^A-Za-z0-9]/.test(val)) score += 15;
+            score = Math.min(score, 100);
+
+            const color = score >= 85 ? '#00ff88'
+                        : score >= 65 ? '#00b4ff'
+                        : score >= 40 ? '#ffd700'
+                        : '#ff3860';
+
+            const label = score >= 85 ? 'Very Strong'
+                        : score >= 65 ? 'Strong'
+                        : score >= 40 ? 'Fair'
+                        : 'Weak';
+
+            liveBar.style.width      = score + '%';
+            liveBar.style.background = color;
+            liveLabel.textContent    = val.length ? label : '';
+            liveLabel.style.color    = color;
+        });
+
+        // ── Loading state on submit ───────────────────────────────────
+        document.querySelector('form').addEventListener('submit', function () {
+            const btn = document.getElementById('checkBtn');
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>ANALYZING...';
+            btn.disabled = true;
+        });
+    </script>
+}
