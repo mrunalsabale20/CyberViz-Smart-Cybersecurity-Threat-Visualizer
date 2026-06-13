@@ -31,6 +31,11 @@ built with ASP.NET Core MVC on .NET 10.
 - **Role-based Auth** — ASP.NET Core Identity with Admin and User roles
 
 ---
+## objective
+
+The main objective of this project is to provide a centralized cybersecurity threat intelligence platform that helps in detecting, analyzing, and visualizing cyber threats in real-time.
+
+---
 
 ## Prerequisites
 
@@ -196,16 +201,37 @@ Roles are seeded automatically on first run.
 
 ## Screenshots
 
-> Add screenshots of your running app here after launch.
+Register Page
+![Register](https://github.com/user-attachments/assets/3e18688a-5028-4308-a2d3-70c428071b74")
+
+Login Page
+![Login](https://github.com/user-attachments/assets/9ada893a-2e44-4abc-9cb2-ebbe7dd57c4b")
+
+Dashboard
+![Dashboard](https://github.com/user-attachments/assets/936d2ee3-f8a1-48eb-9c27-143eeaee5e68)
+
+Cyber Attack Map
+![Map](https://github.com/user-attachments/assets/b77e7b20-edcd-4cff-8e71-ce867df6f2a0)
+
+IP Threat Analysis
+![IP Check](https://github.com/user-attachments/assets/c26bf2f0-9075-4215-bc6d-c02f5812887f)
+
+Phishing URL Checker
+![VirusTotal](https://github.com/user-attachments/assets/f5675172-6b52-4bc3-8c17-c3147b03e027)
+
+Password Analyzer
+![Password](https://github.com/user-attachments/assets/e51f9a5a-a788-4cae-8d6e-93c272b8d9f1)
+
 
 ---
 
 ## Author
 
-**Nidhi Varade**
+**Mrunal Sabale**
 MSc Computer Science — K.K. Wagh College, Nashik
-GitHub: https://github.com/enveeee
-LinkedIn: https://linkedin.com/in/varades
+
+GitHub: https://github.com/mrunalsabale20
+LinkedIn: https://www.linkedin.com/in/mrunal-sabale-b97075258
 
 ---
 
