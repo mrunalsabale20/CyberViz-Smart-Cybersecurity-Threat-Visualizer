@@ -202,10 +202,12 @@ Roles are seeded automatically on first run.
 ## Screenshots
 
 Register Page
-![Register](https://github.com/user-attachments/assets/3e18688a-5028-4308-a2d3-70c428071b74")
+![Register](https://github.com/user-attachments/assets/124092c4-8773-4fb9-aad5-4a2b8d26ae36)
+
 
 Login Page
-![Login](https://github.com/user-attachments/assets/9ada893a-2e44-4abc-9cb2-ebbe7dd57c4b")
+![Login](https://github.com/user-attachments/assets/39941b55-9281-48fa-93e4-1cc1cea71f60")
+
 
 Dashboard
 ![Dashboard](https://github.com/user-attachments/assets/936d2ee3-f8a1-48eb-9c27-143eeaee5e68)
